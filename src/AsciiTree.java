@@ -1,5 +1,4 @@
 public class AsciiTree {
-
     public static void main(String[] args) {
         try {
             if (args.length == 0) {
@@ -23,28 +22,32 @@ public class AsciiTree {
 
     private static void drawTree(int length) {
         if (length == 0 || length == 1) {
-            System.out.println("*");
+            System.out.println("\u001B[32m*\u001B[0m");
             return;
         }
 
-        int maxWidth = 1;
-        for (int width = 3; width <= length; width += 2) {
-            maxWidth = width;
+        int maxWidth = (length % 2 == 0) ? length - 1 : length;
+        int bodyRows = length - 2;
+
+        printCentered(maxWidth, 1, "\u001B[31m");
+
+        int width = 3;
+        int rowsPrinted = 0;
+
+        while (rowsPrinted < bodyRows) {
+            for (int i = 0; i < 2 && rowsPrinted < bodyRows; i++) {
+                printCentered(maxWidth, width, "\u001B[32m");
+                rowsPrinted++;
+            }
+            width += 2;
+            if (width > maxWidth) width = maxWidth;
         }
 
-        printCentered(maxWidth, 1);
-
-        for (int widthToPrint = 3; widthToPrint <= maxWidth; widthToPrint += 2) {
-            printCentered(maxWidth, widthToPrint);
-            printCentered(maxWidth, widthToPrint);
-        }
-
-        printCentered(maxWidth, 1);
+        printCentered(maxWidth, 1, "\u001B[33m");
     }
 
-    private static void printCentered(int totalWidth, int stars) {
+    private static void printCentered(int totalWidth, int stars, String color) {
         int spaces = (totalWidth - stars) / 2;
-        if (spaces < 0) spaces = 0;
-        System.out.println(" ".repeat(spaces) + "*".repeat(stars));
+        System.out.println(" ".repeat(spaces) + color + "*".repeat(stars) + "\u001B[0m");
     }
 }
